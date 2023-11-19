@@ -22,3 +22,4 @@ if __name__ == "__main__":
             send_request(user_input)
         else:
             print("Invalid request. Please enter a 4-character request.")
+
