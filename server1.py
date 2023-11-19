@@ -2,29 +2,26 @@ import socket
 import datetime
 import random
 
-IP = '0.0.0.0'
-PORT = 20003
-QUEUE_SIZE = 1
-MAX_PACKET = 2
-
 
 def handle_request(request):
     if request == "TIME":
-        return str(datetime.datetime.now())
+        response_data = str(datetime.datetime.now())
     elif request == "NAME":
-        return "YSServer"
+        response_data = "MyServer"
     elif request == "RAND":
-        return str(random.randint(1, 10))
+        response_data = str(random.randint(1, 10))
     elif request == "EXIT":
-        return "Goodbye"
+        response_data = "Goodbye"
     else:
-        return "Invalid request"
+        response_data = "Invalid request"
+
+    return f"{request}\n{response_data}"
 
 
 def start_server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((IP, PORT))
-    server_socket.listen(QUEUE_SIZE)
+    server_socket.bind(("localhost", 12345))
+    server_socket.listen(1)
     print("Server is ready to receive requests.")
 
     while True:
@@ -32,7 +29,8 @@ def start_server():
         print(f"Accepted connection from {client_address}")
 
         while True:
-            request = client_socket.recv(MAX_PACKET)
+            request = client_socket.recv(1024).decode()
+            assert len(request) == 4
             if not request:
                 break
 
